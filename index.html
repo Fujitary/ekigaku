@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>疫学探偵事務所 — 歴史の謎を解け</title>
+<style>
+  :root {
+    --bg:       #1A1611;
+    --surface:  #252018;
+    --card:     #2D2720;
+    --border:   rgba(200,175,110,0.18);
+    --gold:     #C8AF6E;
+    --gold-dim: #8A7347;
+    --paper:    #EDE3C8;
+    --paper-dk: #D9CCA8;
+    --red:      #9C3020;
+    --teal:     #2E5C54;
+    --ink:      #2A2018;
+    --muted:    rgba(200,175,110,0.5);
+    --text:     #D8CCB0;
+    --text-dim: #8A8070;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Hiragino Mincho ProN","Yu Mincho","YuMincho",Georgia,serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── noise texture overlay ── */
+  body::before {
+    content: "";
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    opacity: 0.6;
+  }
+
+  /* ── layout ── */
+  .wrapper {
+    position: relative; z-index: 1;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 48px 20px 80px;
+  }
+
+  /* ── header ── */
+  .site-eyebrow {
+    font-family: "Courier New", monospace;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .site-eyebrow::before,
+  .site-eyebrow::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+  }
+
+  .site-title {
+    text-align: center;
+    margin-bottom: 6px;
+  }
+  .site-title h1 {
+    font-size: clamp(28px, 7vw, 42px);
+    font-weight: normal;
+    letter-spacing: 0.06em;
+    color: var(--gold);
+    line-height: 1.2;
+    text-shadow: 0 0 40px rgba(200,175,110,0.3);
+  }
+  .site-title .en {
+    font-family: "Courier New", monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--gold-dim);
+    display: block;
+    margin-top: 6px;
+  }
+
+  /* ── emblem ── */
+  .emblem {
+    display: flex;
+    justify-content: center;
+    margin: 24px 0 30px;
+  }
+  .emblem svg { opacity: 0.75; }
+
+  /* ── intro ── */
+  .intro {
+    text-align: center;
+    font-size: 14.5px;
+    line-height: 1.85;
+    color: var(--text-dim);
+    max-width: 480px;
+    margin: 0 auto 44px;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 22px 0;
+  }
+  .intro strong { color: var(--text); }
+
+  /* ── case file label ── */
+  .section-label {
+    font-family: "Courier New", monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 22px;
+  }
+
+  /* ── cards ── */
+  .cards {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-bottom: 50px;
+  }
+
+  .card {
+    display: block;
+    text-decoration: none;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0;
+    overflow: hidden;
+    position: relative;
+    transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+    cursor: pointer;
+  }
+  .card:hover {
+    border-color: rgba(200,175,110,0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 36px rgba(0,0,0,0.5), 0 0 0 1px rgba(200,175,110,0.12);
+  }
+  .card:active { transform: translateY(0); }
+
+  .card-accent {
+    height: 4px;
+    width: 100%;
+  }
+  .card-accent.red  { background: linear-gradient(90deg, var(--red), #C0392B); }
+  .card-accent.teal { background: linear-gradient(90deg, var(--teal), #3D7D70); }
+
+  .card-body {
+    padding: 22px 24px 24px;
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+
+  .card-number {
+    font-family: "Courier New", monospace;
+    font-size: 36px;
+    color: var(--border);
+    line-height: 1;
+    flex-shrink: 0;
+    margin-top: 4px;
+    font-weight: bold;
+    letter-spacing: -0.02em;
+  }
+
+  .card-content { flex: 1; min-width: 0; }
+
+  .card-tag {
+    font-family: "Courier New", monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    margin-bottom: 7px;
+    display: block;
+  }
+
+  .card-title {
+    font-size: 22px;
+    font-weight: normal;
+    color: var(--text);
+    letter-spacing: 0.04em;
+    line-height: 1.3;
+    margin-bottom: 10px;
+  }
+  .card-title .sub {
+    display: block;
+    font-size: 13px;
+    color: var(--text-dim);
+    letter-spacing: 0.02em;
+    margin-top: 3px;
+    font-style: italic;
+  }
+
+  .card-desc {
+    font-size: 13.5px;
+    line-height: 1.75;
+    color: var(--text-dim);
+    margin-bottom: 18px;
+  }
+
+  .card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 10px;
+    margin-bottom: 18px;
+  }
+  .meta-tag {
+    font-family: "Courier New", monospace;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 2px;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+  }
+
+  .card-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: "Courier New", monospace;
+    font-size: 11.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid rgba(200,175,110,0.35);
+    padding: 9px 16px;
+    border-radius: 2px;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .card:hover .card-cta {
+    background: rgba(200,175,110,0.08);
+    border-color: rgba(200,175,110,0.6);
+  }
+  .card-cta .arrow { transition: transform 0.15s; }
+  .card:hover .card-cta .arrow { transform: translateX(3px); }
+
+  /* ── divider ornament ── */
+  .ornament {
+    text-align: center;
+    color: var(--gold-dim);
+    font-size: 16px;
+    letter-spacing: 0.5em;
+    margin: 10px 0 44px;
+    opacity: 0.5;
+  }
+
+  /* ── about section ── */
+  .about {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 22px 24px;
+    background: var(--surface);
+  }
+  .about-title {
+    font-family: "Courier New", monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .about-title::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+  .about p {
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--text-dim);
+    margin-bottom: 10px;
+  }
+  .about p:last-child { margin-bottom: 0; }
+  .about strong { color: var(--text); }
+
+  /* ── footer ── */
+  .footer {
+    text-align: center;
+    margin-top: 48px;
+    font-family: "Courier New", monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--gold-dim);
+    opacity: 0.6;
+  }
+
+  /* ── accessibility ── */
+  .card:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+
+  /* ── mobile ── */
+  @media (max-width: 480px) {
+    .card-body { gap: 14px; }
+    .card-number { font-size: 28px; }
+    .card-title { font-size: 19px; }
+    .wrapper { padding: 32px 14px 60px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <!-- header -->
+  <div class="site-eyebrow">疫学の歴史的探偵ゲーム</div>
+  <div class="site-title">
+    <h1>疫学探偵事務所</h1>
+    <span class="en">EPIDEMIOLOGY DETECTIVE BUREAU</span>
+  </div>
+
+  <!-- emblem SVG -->
+  <div class="emblem">
+    <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- outer ring -->
+      <circle cx="36" cy="36" r="34" stroke="#C8AF6E" stroke-width="1" opacity="0.5"/>
+      <circle cx="36" cy="36" r="30" stroke="#C8AF6E" stroke-width="0.5" opacity="0.3"/>
+      <!-- magnifying glass -->
+      <circle cx="32" cy="30" r="12" stroke="#C8AF6E" stroke-width="1.5" opacity="0.85"/>
+      <line x1="41" y1="40" x2="52" y2="52" stroke="#C8AF6E" stroke-width="2.5" stroke-linecap="round" opacity="0.85"/>
+      <!-- dot cluster inside lens (ghost map motif) -->
+      <circle cx="28" cy="27" r="1.5" fill="#9C3020" opacity="0.9"/>
+      <circle cx="32" cy="25" r="1.5" fill="#9C3020" opacity="0.9"/>
+      <circle cx="35" cy="29" r="1.5" fill="#9C3020" opacity="0.9"/>
+      <circle cx="30" cy="32" r="1.5" fill="#9C3020" opacity="0.9"/>
+      <circle cx="34" cy="33" r="1" fill="#9C3020" opacity="0.7"/>
+      <circle cx="27" cy="31" r="1" fill="#9C3020" opacity="0.7"/>
+    </svg>
+  </div>
+
+  <!-- intro -->
+  <p class="intro">
+    <strong>疫学</strong>は、人間集団の健康や病気の状態を観察・解析し、<br>
+    病気の予防やコントロールを行おうとする学問です。<br><br>
+    19世紀の2人の医師が残した記録をたどり、<br>
+    感染症の謎を解く探偵となって推理を進めよ。
+  </p>
+
+  <!-- case file cards -->
+  <div class="section-label">— 未解決事件ファイル —</div>
+
+  <div class="cards">
+
+    <!-- Case 01: John Snow -->
+    <a class="card" href="cholera_mystery.html">
+      <div class="card-accent red"></div>
+      <div class="card-body">
+        <div class="card-number">01</div>
+        <div class="card-content">
+          <span class="card-tag">Case File No.1854 · London, England</span>
+          <div class="card-title">
+            霧の中の症例簿
+            <span class="sub">— ジョン・スノウとブロード・ストリートのコレラ —</span>
+          </div>
+          <p class="card-desc">
+            1854年夏、ロンドン・ソーホー地区でコレラが大流行。わずか10日で500人以上が命を落とした。
+            外科医ジョン・スノウは「死者の住所を地図に打つ」という手法で感染源に迫っていく。
+            病原体の正体が不明なまま、感染経路を解明できるか。
+          </p>
+          <div class="card-meta">
+            <span class="meta-tag">記述研究</span>
+            <span class="meta-tag">比較調査</span>
+            <span class="meta-tag">ゴーストマップ</span>
+            <span class="meta-tag">所要時間 約10分</span>
+          </div>
+          <span class="card-cta">捜査を開始する <span class="arrow">→</span></span>
+        </div>
+      </div>
+    </a>
+
+    <!-- Case 02: Takagi -->
+    <a class="card" href="takagi_kakke.html">
+      <div class="card-accent teal"></div>
+      <div class="card-body">
+        <div class="card-number">02</div>
+        <div class="card-content">
+          <span class="card-tag">Case File No.1884 · Tokyo, Imperial Japan</span>
+          <div class="card-title">
+            兵食の謎
+            <span class="sub">— 高木兼寛と軍艦の脚気 —</span>
+          </div>
+          <p class="card-desc">
+            明治期の日本海軍を蝕む謎の病「脚気」。海軍病院の兵員の3割以上が常に罹患し、
+            遠洋航海では死者まで出ていた。軍医・高木兼寛は统計と比較、そして一つの航海実験で
+            この国民病の真因に迫る。世界初の疫学介入試験とも呼ばれる挑戦。
+          </p>
+          <div class="card-meta">
+            <span class="meta-tag">比較統計</span>
+            <span class="meta-tag">介入実験</span>
+            <span class="meta-tag">兵食改革</span>
+            <span class="meta-tag">所要時間 約10分</span>
+          </div>
+          <span class="card-cta">捜査を開始する <span class="arrow">→</span></span>
+        </div>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="ornament">✦ ✦ ✦</div>
+
+  <!-- about -->
+  <div class="about">
+    <div class="about-title">このゲームについて</div>
+    <p>
+      いずれのゲームも<strong>史実に基づくフィクション</strong>です。
+      証拠を集め、仮説を選び、報告書をまとめる体験を通じて、
+      疫学の思考法（記述→比較→介入）を学ぶことができます。
+    </p>
+    <p>
+      ジョン・スノウ（1813〜1858年）は「疫学の父」と呼ばれ、
+      コレラ菌の発見（ロベルト・コッホ、1883年）より30年前に
+      <strong>感染経路の解明</strong>と防疫活動を実現しました。
+      高木兼寛（1849〜1920年）は「日本の疫学の先駆者」として、
+      脚気の原因物質（ビタミンB1）の発見（鈴木梅太郎、1910年）より
+      約25年前に<strong>世界初の疫学介入試験</strong>を行いました。
+    </p>
+    <p>
+      現在の医療現場では、疫学的アプローチにより判明した根拠に基づいて
+      医療を行う<strong>EBM（Evidence-Based Medicine）</strong>が重要視されています。
+    </p>
+  </div>
+
+  <!-- footer -->
+  <div class="footer">EPIDEMIOLOGY DETECTIVE BUREAU &nbsp;·&nbsp; BASED ON HISTORICAL FACTS</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>霧の中の症例簿 — ジョン・スノウ、1854</title>
+<style>
+  :root{
+    --paper: #ECE2C6;
+    --paper-dark: #DCCFA8;
+    --ink: #2B1E14;
+    --ink-soft: #4A3B28;
+    --red: #8C1F1F;
+    --teal: #355751;
+    --gold: #A87C2C;
+    --line: rgba(43,30,20,0.25);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background: radial-gradient(ellipse at top, #f1e8cf 0%, #d9cba0 60%, #c7b787 100%);
+    color: var(--ink);
+    font-family: "Hiragino Mincho ProN","Yu Mincho","YuMincho",serif;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    padding: 14px;
+  }
+  #app{
+    width:100%;
+    max-width:480px;
+    position:relative;
+  }
+  .sheet{
+    background:
+      repeating-linear-gradient(0deg, rgba(43,30,20,0.02) 0px, rgba(43,30,20,0.02) 2px, transparent 2px, transparent 4px),
+      var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    box-shadow: 0 2px 0 var(--paper-dark), 0 14px 28px -10px rgba(43,30,20,0.45);
+    padding: 20px 18px 22px;
+    position: relative;
+    overflow:hidden;
+  }
+  .sheet::before{
+    content:"";
+    position:absolute; inset:8px;
+    border: 1px solid var(--line);
+    pointer-events:none;
+  }
+  .eyebrow{
+    font-family: "Courier New", monospace;
+    letter-spacing: 0.18em;
+    font-size: 11px;
+    color: var(--red);
+    text-transform: uppercase;
+    margin: 0 0 6px;
+    display:flex;
+    justify-content:space-between;
+  }
+  h1{
+    font-size: 26px;
+    line-height:1.3;
+    margin: 0 0 4px;
+    letter-spacing: 0.02em;
+  }
+  h2{
+    font-size: 19px;
+    margin: 0 0 10px;
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 6px;
+  }
+  .sub{
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin: 0 0 16px;
+  }
+  p{ font-size: 15px; line-height: 1.75; margin: 0 0 12px; }
+  .stamp{
+    display:inline-block;
+    border: 2px solid var(--red);
+    color: var(--red);
+    padding: 2px 8px;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    transform: rotate(-3deg);
+    font-weight:bold;
+    border-radius: 2px;
+  }
+  button{
+    font-family: inherit;
+    cursor:pointer;
+    border: none;
+  }
+  .btn{
+    display:block;
+    width:100%;
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 15px;
+    padding: 13px 16px;
+    border-radius: 2px;
+    margin-top: 10px;
+    letter-spacing: 0.04em;
+    transition: transform 0.12s, background 0.15s;
+    text-align:center;
+  }
+  .btn:active{ transform: scale(0.98); }
+  .btn:disabled{ background:#9b8f72; color:#efe9d6; cursor:not-allowed; }
+  .btn.secondary{
+    background: transparent;
+    color: var(--ink);
+    border: 1.5px solid var(--ink);
+  }
+  .btn.gold{ background: var(--gold); color: #fff8e6; }
+  .btn.red{ background: var(--red); color: #fff0e8; }
+
+  .loc-list{ display:flex; flex-direction:column; gap:10px; margin: 14px 0; }
+  .loc-card{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background: rgba(255,255,255,0.35);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 12px;
+    text-align:left;
+    position:relative;
+  }
+  .loc-icon{
+    font-size: 22px;
+    width: 36px;
+    height: 36px;
+    display:flex; align-items:center; justify-content:center;
+    background: var(--paper-dark);
+    border-radius: 50%;
+    flex-shrink:0;
+  }
+  .loc-name{ font-size: 14.5px; font-weight: bold; }
+  .loc-status{ font-size: 11px; color: var(--ink-soft); margin-top:2px; }
+  .loc-card.done{ opacity: 0.55; }
+  .loc-card.done .loc-icon{ background: var(--teal); }
+  .check{
+    margin-left:auto;
+    font-size: 18px;
+    color: var(--teal);
+  }
+
+  .progress-wrap{
+    display:flex; align-items:center; gap:8px; margin-bottom: 14px;
+  }
+  .progress-track{
+    flex:1; height: 7px; background: var(--paper-dark);
+    border-radius: 4px; overflow:hidden; border:1px solid var(--line);
+  }
+  .progress-fill{
+    height:100%; background: var(--red); transition: width 0.4s;
+  }
+  .progress-label{ font-size:11px; font-family:"Courier New",monospace; color: var(--ink-soft); white-space:nowrap;}
+
+  .clue-card{
+    background: #fffdf6;
+    border: 1px solid var(--line);
+    border-left: 5px solid var(--red);
+    padding: 14px;
+    border-radius: 3px;
+    margin: 10px 0 16px;
+    box-shadow: 2px 3px 0 rgba(43,30,20,0.08);
+  }
+  .clue-tag{
+    font-family:"Courier New",monospace;
+    font-size: 10px;
+    color: var(--red);
+    letter-spacing:0.1em;
+    margin-bottom: 6px;
+    display:block;
+  }
+
+  /* map */
+  .map-box{
+    position:relative;
+    width:100%;
+    aspect-ratio: 4/5;
+    background:
+      linear-gradient(rgba(236,226,198,0.0), rgba(236,226,198,0.0)),
+      repeating-linear-gradient(90deg, transparent 0 38px, rgba(43,30,20,0.05) 38px 40px),
+      repeating-linear-gradient(0deg, transparent 0 38px, rgba(43,30,20,0.05) 38px 40px),
+      var(--paper-dark);
+    border: 1px solid var(--ink);
+    border-radius: 3px;
+    overflow:hidden;
+    margin: 10px 0 6px;
+  }
+  .street-label{
+    position:absolute;
+    font-size: 9.5px;
+    color: var(--ink-soft);
+    font-family:"Courier New",monospace;
+    letter-spacing: 0.03em;
+    white-space:nowrap;
+  }
+  .death-dot{
+    position:absolute;
+    width:6px; height:6px;
+    background: var(--red);
+    border-radius:50%;
+    transform: translate(-50%,-50%);
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.5);
+  }
+  .pump{
+    position:absolute;
+    transform: translate(-50%,-50%);
+    width: 30px; height:30px;
+    border-radius:50%;
+    background: var(--paper);
+    border: 2px solid var(--teal);
+    display:flex; align-items:center; justify-content:center;
+    font-size:16px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+  }
+  .pump.selected{ border-color: var(--red); background:#fde9d8; }
+  .pump-label{
+    position:absolute;
+    top: 100%;
+    left:50%;
+    transform: translateX(-50%);
+    font-size: 9px;
+    white-space:nowrap;
+    color: var(--ink);
+    background: rgba(236,226,198,0.85);
+    padding: 1px 4px;
+    border-radius:2px;
+    margin-top:2px;
+  }
+
+  .option{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    background: rgba(255,255,255,0.4);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding: 11px 12px;
+    margin-bottom:8px;
+    text-align:left;
+    font-size: 14px;
+    line-height:1.5;
+  }
+  .option.checked{ background: #e3ecd9; border-color: var(--teal); }
+  .checkbox{
+    width:18px; height:18px; flex-shrink:0; margin-top:1px;
+    border: 1.5px solid var(--ink); border-radius:3px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:12px; color: var(--teal); font-weight:bold;
+  }
+
+  .feedback{
+    font-size: 13px;
+    padding: 10px 12px;
+    border-radius: 3px;
+    margin: 6px 0 14px;
+    border: 1px dashed var(--ink-soft);
+  }
+  .feedback.bad{ color: var(--red); border-color: var(--red); }
+  .feedback.good{ color: var(--teal); border-color: var(--teal); }
+
+  .divider{ border-top: 1px dashed var(--line); margin: 14px 0; }
+
+  .badge-row{ display:flex; gap:6px; flex-wrap:wrap; margin: 10px 0 4px; }
+  .badge{
+    font-size:10px; font-family:"Courier New",monospace;
+    border: 1px solid var(--ink-soft); border-radius: 10px;
+    padding: 2px 8px; color: var(--ink-soft);
+  }
+
+  .modal-bg{
+    position: fixed; inset:0; background: rgba(20,14,8,0.55);
+    display:flex; align-items:center; justify-content:center;
+    padding: 16px; z-index: 50;
+  }
+  .modal{
+    background: #fffdf6; border-radius:4px; padding:18px;
+    max-width: 420px; width:100%;
+    border: 1px solid var(--ink);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  }
+
+  .credit{
+    text-align:center; font-size: 10.5px; color: var(--ink-soft);
+    margin-top: 10px; letter-spacing:0.05em;
+  }
+
+  .timeline{
+    position:relative;
+    margin: 16px 0 18px;
+    padding-left: 24px;
+  }
+  .timeline::before{
+    content:"";
+    position:absolute; left:6px; top:4px; bottom:4px;
+    width:2px; background: var(--ink-soft);
+  }
+  .tl-item{ position:relative; margin-bottom:16px; }
+  .tl-item:last-child{ margin-bottom:0; }
+  .tl-item::before{
+    content:"";
+    position:absolute; left:-24px; top:2px;
+    width:11px; height:11px; border-radius:50%;
+    background: var(--paper); border:2px solid var(--red);
+  }
+  .tl-item.future::before{ border-color: var(--teal); }
+  .tl-year{
+    font-family:"Courier New",monospace;
+    font-size:10.5px; color:var(--red); letter-spacing:0.04em;
+    display:block; margin-bottom:2px;
+  }
+  .tl-item.future .tl-year{ color: var(--teal); }
+  .tl-title{ font-weight:bold; font-size:14px; margin-bottom:3px; }
+  .tl-desc{ font-size:12.5px; color: var(--ink-soft); line-height:1.65; }
+  .tl-legend{
+    display:flex; gap:14px; font-size:10.5px; color:var(--ink-soft);
+    margin: -4px 0 4px; padding-left:2px;
+  }
+  .tl-legend span{ display:flex; align-items:center; gap:5px; }
+  .dot{ width:9px;height:9px;border-radius:50%; display:inline-block; }
+  .dot.red{ background:var(--paper); border:2px solid var(--red); }
+  .dot.teal{ background:var(--paper); border:2px solid var(--teal); }
+
+  ::selection{ background: var(--gold); color:#fff; }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+const LOCATIONS = [
+  {
+    id:'records', icon:'📜', name:'教区死亡記録', short:'9日間で500人超の死',
+    tag:'証拠1・統計', title:'セント・ジェームズ教区 死亡記録',
+    body:`8月31日から9月10日までのわずか10日間で、ブロード・ストリート周辺だけで500人以上が死亡した。<br><br>
+    一軒一軒の死亡者の住所を地図に黒点で打っていく。すると点は無秩序ではなく、ある一点を中心に密集していることが見えてくる――<b>ブロード・ストリートの共同ポンプ</b>だ。<br><br>
+    だが死は「悪い空気（ミアズマ）」のせいだという説が当時の常識だった。この密集が空気のせいなら、なぜ風向きとは無関係に、ポンプを中心とした同心円状に分布するのか。`
+  },
+  {
+    id:'brewery', icon:'🍺', name:'ライオン醸造所', short:'労働者70人、発症ゼロ',
+    tag:'証拠2・反証', title:'ライオン・ブルワリー（醸造所）',
+    body:`ポンプから目と鼻の先に建つ醸造所を訪ねる。70人の労働者のうち、コレラを発症した者は一人もいない。<br><br>
+    主任の証言――<br>
+    <i>「うちでは仕込み中、ビールが配給されるんでね。誰も水なんて飲まんよ。井戸水どころか、よその水も飲まん」</i><br><br>
+    同じ建物、同じ空気を吸っているのに発症者がいない。空気が原因なら説明できない。だが「水を飲まなかった」点だけが、彼らを死者の地図から外している。`
+  },
+  {
+    id:'workhouse', icon:'🏚️', name:'救貧院', short:'535人中、発症わずか5人',
+    tag:'証拠3・反証', title:'プールトニー救貧院（ワークハウス）',
+    body:`ポンプからほんの数十メートルしか離れていない救貧院。本来なら真っ先に被害が出るはずの場所だ。<br><br>
+    しかし収容者535人のうち発症はわずか5人。記録を当たると理由が判明する――この施設には<b>独自の井戸</b>があり、入居者はブロード・ストリートの水を一切使っていなかった。<br><br>
+    距離は近いのに無事。これもまた、「空気」では説明がつかない例外だ。`
+  },
+  {
+    id:'hampstead', icon:'✉️', name:'ハンプステッドの未亡人', short:'遠方でも、同じ水を取りに来させていた',
+    tag:'証拠4・決定的証言', title:'故スザンナ・E夫人の事件',
+    body:`ブロード・ストリートから10km近く離れたハンプステッドで、一人の婦人が突然コレラで死亡した。なぜこんな遠方で？周囲に死者はいない。<br><br>
+    遺族を訪ね歩いて判明する。夫人は以前ブロード・ストリート付近に住んでおり、<b>あのポンプの水の味を気に入っていた</b>。引っ越した後も、毎日馬車で水を取りに来させ、飲み続けていたのだ。<br><br>
+    さらに、彼女のもとを訪れていた姪も同じ水を飲み、同様に死亡していた。<br><br>
+    距離は関係ない。<b>「あの水を飲んだか」だけ</b>が、生死を分けている。`
+  },
+  {
+    id:'waterworks', icon:'📊', name:'水道会社の比較データ', short:'水源の違いが死亡率を10倍近く分ける',
+    tag:'証拠5・大規模比較', title:'南ロンドン 水道会社別 コレラ死亡数',
+    body:`ブロード・ストリートだけでなく、より広いロンドン南部全体のデータを集計する。水を供給する2つの水道会社ごとに、コレラ死亡者数を比べた。<br><br>
+    <table style="width:100%;border-collapse:collapse;font-size:12.5px;margin:8px 0 12px;">
+      <tr style="background:rgba(43,30,20,0.1);">
+        <th style="padding:5px 6px;text-align:left;border:1px solid rgba(43,30,20,0.2);"> </th>
+        <th style="padding:5px 6px;text-align:right;border:1px solid rgba(43,30,20,0.2);">家屋の数</th>
+        <th style="padding:5px 6px;text-align:right;border:1px solid rgba(43,30,20,0.2);">コレラ死亡者数</th>
+        <th style="padding:5px 6px;text-align:right;border:1px solid rgba(43,30,20,0.2);">1万件あたり</th>
+      </tr>
+      <tr>
+        <td style="padding:5px 6px;border:1px solid rgba(43,30,20,0.2);">水道会社①<br><small>（川の<b>下流</b>を水源）</small></td>
+        <td style="padding:5px 6px;text-align:right;border:1px solid rgba(43,30,20,0.2);">40,046</td>
+        <td style="padding:5px 6px;text-align:right;border:1px solid rgba(43,30,20,0.2);color:#8C1F1F;font-weight:bold;">1,263</td>
+        <td style="padding:5px 6px;text-align:right;border:1px solid rgba(43,30,20,0.2);color:#8C1F1F;font-weight:bold;">315</td>
+      </tr>
+      <tr style="background:rgba(53,87,81,0.07);">
+        <td style="padding:5px 6px;border:1px solid rgba(43,30,20,0.2);">水道会社②<br><small>（川の<b>上流</b>を水源）</small></td>
+        <td style="padding:5px 6px;text-align:right;border:1px solid rgba(43,30,20,0.2);">26,107</td>
+        <td style="padding:5px 6px;text-align:right;border:1px solid rgba(43,30,20,0.2);">98</td>
+        <td style="padding:5px 6px;text-align:right;border:1px solid rgba(43,30,20,0.2);">37</td>
+      </tr>
+    </table>
+    <b>1万件あたりの死亡者数が315対37</b>――水道会社①が約8.5倍多い。<br><br>
+    川の下流は、ロンドン市内からの汚水が流れ込む。上流には汚れが届きにくい。この大規模な比較データは、地域を問わず「どの水を飲んでいるか」が死亡率を決めていることを示していた。これがのちに「グランド・エクスペリメント」と呼ばれる比較研究の核心だ。`
+  }
+];
+
+const PUMPS = [
+  { id:'broad', name:'ブロード・ストリートの共同ポンプ', x:50, y:48, correct:true },
+  { id:'carnaby', name:'カーナビー・ストリートのポンプ', x:18, y:22 },
+  { id:'marlborough', name:'リトル・マールボロー・ストリートのポンプ', x:78, y:20 },
+  { id:'rupert', name:'ルパート・ストリートのポンプ', x:75, y:78 },
+];
+
+// death dot cloud, clustered around broad street pump (50,48), scattered lightly elsewhere
+function genDeaths(){
+  const dots=[];
+  for(let i=0;i<46;i++){
+    const ang = Math.random()*Math.PI*2;
+    const r = Math.pow(Math.random(),1.6)*22;
+    dots.push({x:50+Math.cos(ang)*r, y:48+Math.sin(ang)*r*0.85});
+  }
+  // a few faraway outliers (hampstead-style) to make it realistic, but sparse
+  for(let i=0;i<4;i++){
+    dots.push({x: 10+Math.random()*80, y: 8+Math.random()*84});
+  }
+  return dots;
+}
+const DEATHS = genDeaths();
+
+const FINAL_OPTIONS = [
+  { id:'cluster', text:'①死亡者の住所を地図に記すと（記述）、ブロード・ストリートのポンプを中心に密集している。', correct:true },
+  { id:'miasma', text:'西から悪い空気（ミアズマ）が流れてきたために発症した。', correct:false },
+  { id:'brewery', text:'②ポンプ隣の醸造所では、ビールを飲み水の代わりにしていた労働者に発症者がいない（かかった人・かからなかった人の比較）。', correct:true },
+  { id:'poverty', text:'もともと貧しく不衛生な地域なのだから、病気が出るのは当然である。', correct:false },
+  { id:'workhouse', text:'②ポンプ目前の救貧院は独自の井戸を使っており、ほとんど発症していない（かかった人・かからなかった人の比較）。', correct:true },
+  { id:'waterworks', text:'③南ロンドン全体で、川の下流を水源とする水道会社①（1万件あたり315人死亡）は上流の水道会社②（37人）の約8.5倍の死亡率だった（大規模データ収集・検討）。', correct:true },
+];
+
+let state = {
+  screen:'title',
+  collected: new Set(),
+  selectedPump: null,
+  deductionTries: 0,
+  finalChecked: new Set(),
+  finalSubmitted:false,
+  modalLoc:null,
+};
+
+function go(screen){ state.screen=screen; render(); window.scrollTo(0,0); }
+
+function toggleSet(set,id){
+  if(set.has(id)) set.delete(id); else set.add(id);
+}
+
+function render(){
+  const app = document.getElementById('app');
+  app.innerHTML = '';
+  const sheet = document.createElement('div');
+  sheet.className='sheet';
+  sheet.appendChild(renderScreen());
+  app.appendChild(sheet);
+  if(state.modalLoc){
+    app.appendChild(renderModal(state.modalLoc));
+  }
+}
+
+function eyebrow(left,right){
+  const d=document.createElement('div');
+  d.className='eyebrow';
+  d.innerHTML = `<span>${left}</span><span>${right}</span>`;
+  return d;
+}
+
+function renderScreen(){
+  const frag = document.createElement('div');
+  switch(state.screen){
+    case 'title': frag.appendChild(screenTitle()); break;
+    case 'brief': frag.appendChild(screenBrief()); break;
+    case 'hub': frag.appendChild(screenHub()); break;
+    case 'deduction': frag.appendChild(screenDeduction()); break;
+    case 'report': frag.appendChild(screenReport()); break;
+    case 'ending': frag.appendChild(screenEnding()); break;
+  }
+  return frag;
+}
+
+function screenTitle(){
+  const d=document.createElement('div');
+  d.appendChild(eyebrow('CASE FILE No.1854','SOHO, LONDON'));
+  const h=document.createElement('h1'); h.textContent='霧の中の症例簿';
+  const s=document.createElement('p'); s.style.fontSize='14px'; s.style.color='var(--ink-soft)';
+  s.innerHTML='― ジョン・スノウとブロード・ストリートのコレラ ―';
+  d.appendChild(h); d.appendChild(s);
+
+  const p=document.createElement('p');
+  p.innerHTML = `1854年8月末、ロンドン・ソーホー地区。わずか数日でコレラにより数百人が命を落とした。<br><br>
+  当時の医学界は「悪い空気（ミアズマ）」が病の原因だと信じていた。しかし、あなた――医師<b>ジョン・スノウ</b>は違う仮説を持っている。<br><br>
+  地図と証言だけを武器に、死の真の源を突き止めよ。`;
+  d.appendChild(p);
+
+  const span = document.createElement('div'); span.className='stamp'; span.textContent='CONFIDENTIAL';
+  d.appendChild(span);
+
+  const btn=document.createElement('button'); btn.className='btn red'; btn.textContent='捜査を開始する';
+  btn.onclick=()=>go('brief');
+  d.appendChild(btn);
+
+  const credit=document.createElement('div'); credit.className='credit';
+  credit.textContent='所要時間 約10分 ・ 史実に基づくフィクション';
+  d.appendChild(credit);
+  return d;
+}
+
+function screenBrief(){
+  const d=document.createElement('div');
+  d.appendChild(eyebrow('BRIEFING','1854.09.07'));
+  const h=document.createElement('h2'); h.textContent='捜査方針';
+  d.appendChild(h);
+  const p=document.createElement('p');
+  p.innerHTML = `スノウ医師の調査は、次の3つの手順で進む。<br><br>
+  <b>① 死亡者の家を一軒ずつ訪ね、状況・環境を調査する</b>（記述）<br>
+  <b>② かかった人とかかっていない人の違いを比べる</b>（比較）<br>
+  <b>③ 違いについて、大規模なデータを収集・検討する</b>（大規模比較）<br><br>
+  現場で5つの手がかりを集めた後、<b>地図上から感染源のポンプを特定</b>し、最後に教区委員会へ提出する<b>報告書</b>をまとめる。<br><br>
+  <span class="stamp" style="transform:rotate(0deg);">同じ水を飲んだ者だけが死ぬ</span>`;
+  d.appendChild(p);
+  const btn=document.createElement('button'); btn.className='btn'; btn.textContent='現場へ向かう';
+  btn.onclick=()=>go('hub');
+  d.appendChild(btn);
+  return d;
+}
+
+function screenHub(){
+  const d=document.createElement('div');
+  d.appendChild(eyebrow('INVESTIGATION','BROAD STREET, SOHO'));
+  const h=document.createElement('h2'); h.textContent='聞き込み先を選ぶ';
+  d.appendChild(h);
+
+  const pwrap=document.createElement('div'); pwrap.className='progress-wrap';
+  const track=document.createElement('div'); track.className='progress-track';
+  const fill=document.createElement('div'); fill.className='progress-fill';
+  fill.style.width = `${(state.collected.size/LOCATIONS.length)*100}%`;
+  track.appendChild(fill);
+  const label=document.createElement('div'); label.className='progress-label';
+  label.textContent=`証拠 ${state.collected.size} / ${LOCATIONS.length}`;
+  pwrap.appendChild(track); pwrap.appendChild(label);
+  d.appendChild(pwrap);
+
+  const list=document.createElement('div'); list.className='loc-list';
+  LOCATIONS.forEach(loc=>{
+    const done = state.collected.has(loc.id);
+    const card=document.createElement('button');
+    card.className='loc-card'+(done?' done':'');
+    card.innerHTML = `
+      <div class="loc-icon">${loc.icon}</div>
+      <div>
+        <div class="loc-name">${loc.name}</div>
+        <div class="loc-status">${done? '聞き込み済み':loc.short}</div>
+      </div>
+      ${done? '<div class="check">✔︎</div>':''}
+    `;
+    card.onclick=()=>{ state.modalLoc=loc.id; render(); };
+    list.appendChild(card);
+  });
+  d.appendChild(list);
+
+  const btn=document.createElement('button');
+  btn.className='btn red';
+  btn.textContent= state.collected.size===LOCATIONS.length ? '地図を広げ、感染源を特定する' : `あと${LOCATIONS.length-state.collected.size}件の聞き込みが必要`;
+  btn.disabled = state.collected.size!==LOCATIONS.length;
+  btn.onclick=()=>go('deduction');
+  d.appendChild(btn);
+
+  return d;
+}
+
+function renderModal(locId){
+  const loc = LOCATIONS.find(l=>l.id===locId);
+  const bg=document.createElement('div'); bg.className='modal-bg';
+  bg.onclick=(e)=>{ if(e.target===bg){ state.modalLoc=null; render(); } };
+  const modal=document.createElement('div'); modal.className='modal';
+  modal.innerHTML = `
+    <span class="clue-tag">${loc.tag}</span>
+    <h2 style="font-size:17px;">${loc.title}</h2>
+    <p style="font-size:14px;">${loc.body}</p>
+  `;
+  const btn=document.createElement('button');
+  btn.className='btn';
+  btn.textContent='証拠ノートに記録する';
+  btn.onclick=()=>{
+    state.collected.add(loc.id);
+    state.modalLoc=null;
+    render();
+  };
+  modal.appendChild(btn);
+  bg.appendChild(modal);
+  return bg;
+}
+
+function screenDeduction(){
+  const d=document.createElement('div');
+  d.appendChild(eyebrow('THE GHOST MAP','死亡分布図'));
+  const h=document.createElement('h2'); h.textContent='感染源のポンプはどれか';
+  d.appendChild(h);
+  const p=document.createElement('p');
+  p.style.fontSize='13.5px';
+  p.innerHTML='赤い点はコレラによる死亡者の住所。4つのポンプのうち、これまでの証言と整合する一つを選べ。';
+  d.appendChild(p);
+
+  const map=document.createElement('div'); map.className='map-box';
+  // street labels for flavor
+  const streets = [
+    {t:'BROAD ST.',x:36,y:48},{t:'CARNABY ST.',x:14,y:14},
+    {t:'MARLBOROUGH ST.',x:60,y:12},{t:'RUPERT ST.',x:68,y:86}
+  ];
+  streets.forEach(s=>{
+    const el=document.createElement('div'); el.className='street-label';
+    el.style.left=s.x+'%'; el.style.top=s.y+'%';
+    el.textContent=s.t;
+    map.appendChild(el);
+  });
+  DEATHS.forEach(pt=>{
+    const el=document.createElement('div'); el.className='death-dot';
+    el.style.left=Math.max(3,Math.min(97,pt.x))+'%';
+    el.style.top=Math.max(3,Math.min(97,pt.y))+'%';
+    map.appendChild(el);
+  });
+  PUMPS.forEach(pump=>{
+    const el=document.createElement('button');
+    el.className='pump'+(state.selectedPump===pump.id?' selected':'');
+    el.style.left=pump.x+'%'; el.style.top=pump.y+'%';
+    el.innerHTML='💧<div class="pump-label">'+pump.name.replace('のポンプ','').replace('共同ポンプ','').replace('・ストリート','')+'</div>';
+    el.onclick=()=>{ state.selectedPump=pump.id; render(); };
+    map.appendChild(el);
+  });
+  d.appendChild(map);
+
+  if(state.selectedPump){
+    const pump = PUMPS.find(p=>p.id===state.selectedPump);
+    if(pump.correct){
+      const fb=document.createElement('div'); fb.className='feedback good';
+      fb.innerHTML='✔ 死亡分布の中心、醸造所と救貧院の例外、そしてハンプステッドの証言――すべてがこの一点を指している。';
+      d.appendChild(fb);
+      const btn=document.createElement('button'); btn.className='btn red'; btn.textContent='委員会への報告書を書く';
+      btn.onclick=()=>go('report');
+      d.appendChild(btn);
+    } else {
+      const fb=document.createElement('div'); fb.className='feedback bad';
+      fb.innerHTML='✘ この水源では、醸造所と救貧院が無事だった理由、また遠方の死者の説明がつかない。証拠ノートを見直してみよう。';
+      d.appendChild(fb);
+    }
+  }
+  return d;
+}
+
+function screenReport(){
+  const d=document.createElement('div');
+  d.appendChild(eyebrow('FINAL REPORT','セント・ジェームズ教区委員会 宛'));
+  const h=document.createElement('h2'); h.textContent='報告書に載せる根拠を選べ';
+  d.appendChild(h);
+  const p=document.createElement('p'); p.style.fontSize='13.5px';
+  p.innerHTML='委員会は「空気説」を信じている。<b>水が原因だと証明できる事実だけ</b>を選んで提出せよ。誤った根拠を混ぜると説得力を失う。';
+  d.appendChild(p);
+
+  FINAL_OPTIONS.forEach(opt=>{
+    const checked = state.finalChecked.has(opt.id);
+    const row=document.createElement('button');
+    row.className='option'+(checked?' checked':'');
+    row.innerHTML = `<div class="checkbox">${checked?'✔':''}</div><div>${opt.text}</div>`;
+    row.onclick=()=>{
+      if(state.finalSubmitted) return;
+      toggleSet(state.finalChecked, opt.id);
+      render();
+    };
+    d.appendChild(row);
+  });
+
+  if(!state.finalSubmitted){
+    const btn=document.createElement('button'); btn.className='btn red';
+    btn.textContent='委員会に提出する';
+    btn.disabled = state.finalChecked.size===0;
+    btn.onclick=()=>{ state.finalSubmitted=true; render(); };
+    d.appendChild(btn);
+  } else {
+    const correctIds = new Set(FINAL_OPTIONS.filter(o=>o.correct).map(o=>o.id));
+    const pickedWrong = [...state.finalChecked].some(id=>!correctIds.has(id));
+    const gotAllCorrect = [...correctIds].every(id=>state.finalChecked.has(id));
+    const perfect = gotAllCorrect && !pickedWrong;
+
+    const fb=document.createElement('div');
+    fb.className='feedback '+(perfect?'good':'bad');
+    if(perfect){
+      fb.innerHTML='✔ 委員会は沈黙した後、ブロード・ストリートのポンプの<b>柄(取っ手)を外す</b>ことに同意した。地図と比較だけで、空気説の壁を動かした瞬間だった。';
+    } else if(pickedWrong){
+      fb.innerHTML='✘ 「ミアズマ」や「貧困地域だから」という根拠は証明にならない。スノウの3手順①②③に対応する事実だけを選び直そう。';
+    } else {
+      fb.innerHTML='△ 正しい根拠は選べているが、まだ足りない。記述①・比較②・大規模データ③の3つすべてが揃って初めて委員会を説得できる。';
+    }
+    d.appendChild(fb);
+
+    const btn=document.createElement('button'); btn.className='btn';
+    btn.textContent = perfect? '結末を見る' : '選び直す';
+    btn.onclick=()=>{
+      if(perfect){ go('ending'); }
+      else { state.finalSubmitted=false; render(); }
+    };
+    d.appendChild(btn);
+  }
+  return d;
+}
+
+function screenEnding(){
+  const d=document.createElement('div');
+  d.appendChild(eyebrow('EPILOGUE','1854.09.08 〜'));
+  const h=document.createElement('h2'); h.textContent='ポンプの柄が外された日';
+  d.appendChild(h);
+  const p1=document.createElement('p');
+  p1.innerHTML = `1854年9月8日、ブロード・ストリートの共同ポンプから取っ手が外された。<br><br>
+  実際の流行はその数日前から自然に下降していたとも言われ、取っ手の撤去だけが流行を止めた決定打だったかは、今も歴史家の間で議論がある。`;
+  d.appendChild(p1);
+
+  const p2=document.createElement('p');
+  p2.innerHTML = `ここで一つ、はっきりさせておきたい。<b>これは介入研究ではない。</b><br>
+  ある集団には水を与え、別の集団には与えない――というように条件を操作して効果を検証する実験ではなく、観察結果を根拠に行政が下した一つの公衆衛生上の<b>「判断」</b>にすぎない。スノウ自身も、柄を外したことを効果の証明だとは主張していない。`;
+  d.appendChild(p2);
+
+  const p3=document.createElement('p');
+  p3.innerHTML = `では、スノウが本当に積み上げたものは何か。それは後の疫学が辿る階段の、最初の二段だった。`;
+  d.appendChild(p3);
+
+  const legend=document.createElement('div'); legend.className='tl-legend';
+  legend.innerHTML = `<span><i class="dot red"></i>スノウが実際に行ったこと</span><span><i class="dot teal"></i>この先、確立されていく手法</span>`;
+  d.appendChild(legend);
+
+  const tl=document.createElement('div'); tl.className='timeline';
+  const items=[
+    {y:'1854 ①', t:'記述研究（descriptive）', desc:'死者の住所を一つひとつ地図に記し、分布の中心を可視化した――「ゴーストマップ」。まずは現象の形を正確に描くこと。', future:false},
+    {y:'1854 ②', t:'比較・自然実験（natural experiment）', desc:'醸造所・救貧院という「水を飲まなかった集団」との比較。さらにこの後、南ロンドンの2つの水道会社が供給する地域ごとの死亡率を比べた「グランド・エクスペリメント」へと発展する。要因ごとに集団を比べる、という発想の原型。', future:false},
+    {y:'20世紀前半', t:'症例対照研究・コホート研究の確立', desc:'「発症した人」と「発症していない人」の要因を体系的に比較する手法が整理されていく。スノウの比較の発想が、正式な研究デザインとして方法論化される。', future:true},
+    {y:'1948年', t:'ランダム化比較試験(RCT)', desc:'A.ブラッドフォード・ヒルらによる結核治療薬の試験が、近代的な介入研究の出発点とされる。集団を操作し、効果を検証する――スノウが行わなかった最後の一段。', future:true},
+  ];
+  items.forEach(it=>{
+    const el=document.createElement('div'); el.className='tl-item'+(it.future?' future':'');
+    el.innerHTML = `<span class="tl-year">${it.y}</span><div class="tl-title">${it.t}</div><div class="tl-desc">${it.desc}</div>`;
+    tl.appendChild(el);
+  });
+  d.appendChild(tl);
+
+  const p4=document.createElement('p');
+  p4.innerHTML = `スノウが特定したのは「コレラ菌」そのものではない。コレラ菌の発見は約30年後の1883年、<b>ロベルト・コッホ</b>（ドイツ医師、1843〜1910年）の手による。コッホはほかに炭疽菌・結核菌も発見し、1905年にノーベル生理学・医学賞を受賞した。<br><br>
+  スノウが残したのは、<b>「病原体が不明であっても、感染経路の解明と対策により感染症の流行を阻止できる」</b>という実証だ。今日の感染対策はこの3点に整理される――<br>
+  <b>感染源</b>対策（検疫・隔離）／<b>感染経路</b>対策（手洗い・上下水道整備）／<b>感受性宿主</b>対策（予防接種・体力づくり）。<br><br>
+  なおコレラは現在、感染症法における<b>3類感染症</b>に分類される。記述から比較へ――この一歩が、後に症例対照研究・コホート研究・介入研究へと枝分かれしていく「疫学」という学問の出発点になった。`;
+  d.appendChild(p4);
+
+  const badges=document.createElement('div'); badges.className='badge-row';
+  ['疫学の父','ゴーストマップ','感染経路の解明','3類感染症','EBMの源流'].forEach(t=>{
+    const b=document.createElement('span'); b.className='badge'; b.textContent=t; badges.appendChild(b);
+  });
+  d.appendChild(badges);
+
+  const div=document.createElement('div'); div.className='divider'; d.appendChild(div);
+
+  const span = document.createElement('div'); span.className='stamp'; span.textContent='CASE CLOSED';
+  d.appendChild(span);
+
+  const btn=document.createElement('button'); btn.className='btn secondary'; btn.textContent='もう一度、最初から捜査する';
+  btn.onclick=()=>{
+    state = {screen:'title', collected:new Set(), selectedPump:null, deductionTries:0, finalChecked:new Set(), finalSubmitted:false, modalLoc:null};
+    render();
+  };
+  d.appendChild(btn);
+  return d;
+}
+
+render();
+</script>
+</body>
+</html>

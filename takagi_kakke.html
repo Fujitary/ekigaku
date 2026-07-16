@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>兵食の謎 — 高木兼寛と脚気、1884</title>
+<style>
+  :root{
+    --paper: #EFE6D2;
+    --paper-dark: #DECBA0;
+    --ink: #2A241A;
+    --ink-soft: #564B36;
+    --red: #9C3B2E;
+    --navy: #1F3A4D;
+    --gold: #A8762C;
+    --line: rgba(42,36,26,0.25);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background: radial-gradient(ellipse at top, #f2ead4 0%, #ddcb9f 60%, #c4b182 100%);
+    color: var(--ink);
+    font-family: "Hiragino Mincho ProN","Yu Mincho","YuMincho",serif;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    padding: 14px;
+  }
+  #app{ width:100%; max-width:480px; position:relative; }
+  .sheet{
+    background:
+      repeating-linear-gradient(0deg, rgba(42,36,26,0.02) 0px, rgba(42,36,26,0.02) 2px, transparent 2px, transparent 4px),
+      var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    box-shadow: 0 2px 0 var(--paper-dark), 0 14px 28px -10px rgba(42,36,26,0.45);
+    padding: 20px 18px 22px;
+    position: relative;
+    overflow:hidden;
+  }
+  .sheet::before{
+    content:""; position:absolute; inset:8px;
+    border: 1px solid var(--line); pointer-events:none;
+  }
+  .eyebrow{
+    font-family:"Courier New",monospace; letter-spacing:0.18em; font-size:11px;
+    color: var(--navy); text-transform:uppercase; margin:0 0 6px;
+    display:flex; justify-content:space-between;
+  }
+  h1{ font-size:25px; line-height:1.35; margin:0 0 4px; letter-spacing:0.02em; }
+  h2{ font-size:18.5px; margin:0 0 10px; border-bottom:2px solid var(--ink); padding-bottom:6px; }
+  .sub{ font-size:13px; color:var(--ink-soft); margin:0 0 16px; }
+  p{ font-size:15px; line-height:1.75; margin:0 0 12px; }
+  .stamp{
+    display:inline-block; border:2px solid var(--navy); color:var(--navy);
+    padding:2px 8px; font-size:11px; letter-spacing:0.1em; transform:rotate(-3deg);
+    font-weight:bold; border-radius:2px;
+  }
+  button{ font-family:inherit; cursor:pointer; border:none; }
+  .btn{
+    display:block; width:100%; background:var(--ink); color:var(--paper);
+    font-size:15px; padding:13px 16px; border-radius:2px; margin-top:10px;
+    letter-spacing:0.04em; transition: transform 0.12s, background 0.15s; text-align:center;
+  }
+  .btn:active{ transform:scale(0.98); }
+  .btn:disabled{ background:#9b8f72; color:#efe9d6; cursor:not-allowed; }
+  .btn.secondary{ background:transparent; color:var(--ink); border:1.5px solid var(--ink); }
+  .btn.navy{ background:var(--navy); color:#eaf2f7; }
+  .btn.red{ background:var(--red); color:#fff0e8; }
+
+  .loc-list{ display:flex; flex-direction:column; gap:10px; margin:14px 0; }
+  .loc-card{
+    display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.35);
+    border:1px solid var(--line); border-radius:4px; padding:12px; text-align:left; position:relative;
+  }
+  .loc-icon{
+    font-size:22px; width:36px; height:36px; display:flex; align-items:center; justify-content:center;
+    background:var(--paper-dark); border-radius:50%; flex-shrink:0;
+  }
+  .loc-name{ font-size:14.5px; font-weight:bold; }
+  .loc-status{ font-size:11px; color:var(--ink-soft); margin-top:2px; }
+  .loc-card.done{ opacity:0.55; }
+  .loc-card.done .loc-icon{ background:var(--navy); }
+  .check{ margin-left:auto; font-size:18px; color:var(--navy); }
+
+  .progress-wrap{ display:flex; align-items:center; gap:8px; margin-bottom:14px; }
+  .progress-track{ flex:1; height:7px; background:var(--paper-dark); border-radius:4px; overflow:hidden; border:1px solid var(--line); }
+  .progress-fill{ height:100%; background:var(--red); transition: width 0.4s; }
+  .progress-label{ font-size:11px; font-family:"Courier New",monospace; color:var(--ink-soft); white-space:nowrap;}
+
+  .clue-tag{ font-family:"Courier New",monospace; font-size:10px; color:var(--red); letter-spacing:0.1em; margin-bottom:6px; display:block; }
+
+  /* comparison chart */
+  .chart-box{
+    border:1px solid var(--ink); border-radius:3px; background:var(--paper-dark);
+    padding:14px 12px 10px; margin:10px 0 6px;
+  }
+  .bar-row{ margin-bottom:12px; }
+  .bar-label{ font-size:12.5px; margin-bottom:4px; display:flex; justify-content:space-between; }
+  .bar-track{ height:16px; background:rgba(255,255,255,0.5); border:1px solid var(--line); border-radius:3px; overflow:hidden; }
+  .bar-fill{ height:100%; background:var(--red); border-radius:2px 0 0 2px; transition:width 0.6s; }
+  .bar-fill.low{ background: var(--navy); }
+
+  .option{
+    display:flex; align-items:flex-start; gap:10px; background:rgba(255,255,255,0.4);
+    border:1px solid var(--line); border-radius:4px; padding:11px 12px; margin-bottom:8px;
+    text-align:left; font-size:14px; line-height:1.5;
+  }
+  .option.checked{ background:#e6ecf0; border-color:var(--navy); }
+  .option.radio.checked{ background:#f1e4d6; border-color:var(--red); }
+  .checkbox{
+    width:18px; height:18px; flex-shrink:0; margin-top:1px; border:1.5px solid var(--ink); border-radius:3px;
+    display:flex; align-items:center; justify-content:center; font-size:12px; color:var(--navy); font-weight:bold;
+  }
+  .checkbox.round{ border-radius:50%; color:var(--red); }
+
+  .feedback{ font-size:13px; padding:10px 12px; border-radius:3px; margin:6px 0 14px; border:1px dashed var(--ink-soft); }
+  .feedback.bad{ color:var(--red); border-color:var(--red); }
+  .feedback.good{ color:var(--navy); border-color:var(--navy); }
+
+  .divider{ border-top:1px dashed var(--line); margin:14px 0; }
+  .badge-row{ display:flex; gap:6px; flex-wrap:wrap; margin:10px 0 4px; }
+  .badge{ font-size:10px; font-family:"Courier New",monospace; border:1px solid var(--ink-soft); border-radius:10px; padding:2px 8px; color:var(--ink-soft); }
+
+  .modal-bg{ position:fixed; inset:0; background:rgba(20,17,10,0.55); display:flex; align-items:center; justify-content:center; padding:16px; z-index:50; }
+  .modal{ background:#fffdf6; border-radius:4px; padding:18px; max-width:420px; width:100%; border:1px solid var(--ink); box-shadow:0 20px 40px rgba(0,0,0,0.4); max-height:85vh; overflow-y:auto; }
+
+  .credit{ text-align:center; font-size:10.5px; color:var(--ink-soft); margin-top:10px; letter-spacing:0.05em; }
+
+  .timeline{ position:relative; margin:16px 0 18px; padding-left:24px; }
+  .timeline::before{ content:""; position:absolute; left:6px; top:4px; bottom:4px; width:2px; background:var(--ink-soft); }
+  .tl-item{ position:relative; margin-bottom:16px; }
+  .tl-item:last-child{ margin-bottom:0; }
+  .tl-item::before{
+    content:""; position:absolute; left:-24px; top:2px; width:11px; height:11px; border-radius:50%;
+    background:var(--paper); border:2px solid var(--red);
+  }
+  .tl-item.future::before{ border-color:var(--navy); }
+  .tl-item.this::before{ border-color:var(--gold); background: var(--gold); }
+  .tl-year{ font-family:"Courier New",monospace; font-size:10.5px; color:var(--red); letter-spacing:0.04em; display:block; margin-bottom:2px; }
+  .tl-item.future .tl-year{ color:var(--navy); }
+  .tl-item.this .tl-year{ color:var(--gold); }
+  .tl-title{ font-weight:bold; font-size:14px; margin-bottom:3px; }
+  .tl-desc{ font-size:12.5px; color:var(--ink-soft); line-height:1.65; }
+  .tl-legend{ display:flex; flex-wrap:wrap; gap:10px 14px; font-size:10.5px; color:var(--ink-soft); margin:-4px 0 4px; padding-left:2px; }
+  .tl-legend span{ display:flex; align-items:center; gap:5px; }
+  .dot{ width:9px;height:9px;border-radius:50%; display:inline-block; }
+  .dot.red{ background:var(--paper); border:2px solid var(--red); }
+  .dot.navy{ background:var(--paper); border:2px solid var(--navy); }
+  .dot.gold{ background:var(--gold); border:2px solid var(--gold); }
+
+  ::selection{ background: var(--gold); color:#fff; }
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+const LOCATIONS = [
+  {
+    id:'hospital', icon:'🏥', name:'海軍病院の脚気統計', short:'兵卒に集中する脚気患者',
+    tag:'証拠1・統計', title:'海軍病院 脚気患者記録',
+    body:`海軍病院の記録を調べる。脚気――手足のしびれ、むくみ、動悸、重症化すれば心不全で死に至る病。原因不明のまま、毎年多くの水兵を苦しめている。<br><br>
+    記録を兵卒と士官に分けて並べてみると、ある偏りが見えてくる。<b>士官にはほとんど発症者がいない</b>のに対し、<b>下級の兵卒に患者が集中している</b>。同じ艦に乗り、同じ空気を吸っているのに、なぜこの差が生まれるのか。`
+  },
+  {
+    id:'ryujo', icon:'⚓', name:'軍艦「龍驤」の航海記録', short:'376名中169名が発症、25名死亡',
+    tag:'証拠2・悲劇の記録', title:'軍艦「龍驤」遠洋航海記録（明治15年）',
+    body:`ニュージーランド・ペルー・ハワイをめぐる9か月の遠洋航海に出た練習艦「龍驤」の記録を開く。乗員<b>376名のうち169名が重症脚気を発症し、25名が死亡</b>。船は航行不能に近い状態となり、ようやくハワイに寄港した。<br><br>
+    ハワイ停泊中、食事を<b>米食から肉・野菜中心に全部入れ替えた</b>ところ、患者が快方に向かい、その後は一人の患者も出さなかったという記述がある。<br><br>
+    これは偶然か。それとも――食事そのものに、何かが隠れているのか。`
+  },
+  {
+    id:'diet', icon:'🍚', name:'兵卒の食事内容', short:'白米一日六合、おかずはわずか',
+    tag:'証拠3・生活実態', title:'兵卒の食事を調べる',
+    body:`兵卒の食費の使い方を聞き込む。一日に支給される白米は実に<b>六合（茶碗にして十数杯分）</b>。一方、おかずは自分の食費でまかなう仕組みのため、貧しい兵卒の多くはおかずを削り、その分を貯金に回している。<br><br>
+    結果、彼らの食事は<b>白米と塩辛い漬物が中心</b>になっている。士官の食卓には肉やパン、野菜が並ぶのに対し、兵卒の皿にはほとんど「おかず」がない。<br><br>
+    イギリス海軍の食事と比べても、日本の兵食は炭水化物に偏り、タンパク質が著しく少ないように見える。`
+  },
+  {
+    id:'rival', icon:'🦠', name:'陸軍軍医・東京大学の見解', short:'「脚気菌」による伝染病だという反論',
+    tag:'証拠4・対立する説', title:'陸軍軍医・衛生学教授の見解',
+    body:`東京大学・陸軍の医師たちを訪ねる。ドイツ留学で細菌学を学んだ彼らは、脚気を<b>「脚気菌」による伝染病</b>だと考えている。衛生学教授は脚気菌発見を報告し、ドイツ帰りの軍医は栄養説を「学理的根拠が粗雑だ」と批判する。<br><br>
+    彼らの理屈は最先端の細菌学に基づいている。だが、それでは<b>なぜ同じ艦内で士官と兵卒に差が出るのか</b>、説明がつかない。空気や菌が原因なら、身分によって発症率が違う理由にならない。`
+  },
+  {
+    id:'climate', icon:'🌡️', name:'寒冷地・気候説の検討', short:'気候や地域だけでは説明できない',
+    tag:'証拠5・反証', title:'気候・体質説を検討する',
+    body:`「南国育ちは脚気になりにくい」「寒冷な土地が悪い」といった俗説も聞き込んでみる。しかし記録を当たると、同じ気候・同じ風土の出身者でも、<b>白米中心の生活をしている者ほど発症しやすい</b>ことがわかる。<br><br>
+    体質や生まれの土地ではなく、もっと身近な――毎日の食卓に答えがあるのではないか。`
+  }
+];
+
+// comparative chart data (kakke incidence, illustrative based on rank/diet pattern)
+const CHART_GROUPS = [
+  { label:'兵卒（白米中心・おかず少）', value: 86, low:false },
+  { label:'士官（洋食・肉や野菜が多い）', value: 8, low:true },
+  { label:'イギリス海軍水兵（参考）', value: 4, low:true },
+];
+
+const CAUSE_OPTIONS = [
+  { id:'miasma', text:'船内に漂う「悪い空気」や湿気が脚気を引き起こす', correct:false },
+  { id:'germ', text:'未知の「脚気菌」による伝染病である', correct:false },
+  { id:'climate', text:'寒冷な航路や出身地の気候による体質の問題', correct:false },
+  { id:'diet', text:'白米に偏り、タンパク質（窒素）が不足した食事が原因である', correct:true },
+];
+
+const FINAL_OPTIONS = [
+  { id:'rank', text:'士官と兵卒で食事内容が異なり、発症率にも明確な差がある。（かかった人・かからなかった人の比較）', correct:true },
+  { id:'ryujo', text:'「龍驤」は白米中心の食事で遠洋航海をし、376名中169名が発症・25名が死亡した。', correct:true },
+  { id:'hawaii', text:'「龍驤」がハワイで食事を肉・野菜中心に全部入れ替えたところ、患者は快方に向かった。', correct:true },
+  { id:'germfalse', text:'脚気菌が発見されたと報告されているので、伝染病として隔離対策をすべきだ。', correct:false },
+  { id:'spirit', text:'兵卒の気力や鍛錬が足りないために病に倒れるのだ。', correct:false },
+  { id:'tsukuba', text:'「筑波」で改善食（麦・肉・野菜を加えた食事）に変えたところ、333名中脚気患者ゼロ・死者ゼロだった。（龍驤との比較による介入実験）', correct:true },
+];
+
+const MENU_OPTIONS = [
+  { id:'keep', text:'これまでと同じ、白米中心の食事のまま出航させる', correct:false },
+  { id:'improve', text:'麦・肉・野菜を加え、白米への依存を減らした食事に変える', correct:true },
+  { id:'less', text:'白米の量をただ減らし、何も加えずに我慢させる', correct:false },
+];
+
+let state = {
+  screen:'title',
+  collected: new Set(),
+  causeSelected: null,
+  finalChecked: new Set(),
+  finalSubmitted:false,
+  menuSelected: null,
+  modalLoc:null,
+};
+
+function go(screen){ state.screen=screen; render(); window.scrollTo(0,0); }
+function toggleSet(set,id){ if(set.has(id)) set.delete(id); else set.add(id); }
+
+function render(){
+  const app = document.getElementById('app');
+  app.innerHTML = '';
+  const sheet = document.createElement('div');
+  sheet.className='sheet';
+  sheet.appendChild(renderScreen());
+  app.appendChild(sheet);
+  if(state.modalLoc){ app.appendChild(renderModal(state.modalLoc)); }
+}
+
+function eyebrow(left,right){
+  const d=document.createElement('div'); d.className='eyebrow';
+  d.innerHTML = `<span>${left}</span><span>${right}</span>`;
+  return d;
+}
+
+function renderScreen(){
+  const frag = document.createElement('div');
+  switch(state.screen){
+    case 'title': frag.appendChild(screenTitle()); break;
+    case 'brief': frag.appendChild(screenBrief()); break;
+    case 'hub': frag.appendChild(screenHub()); break;
+    case 'cause': frag.appendChild(screenCause()); break;
+    case 'menu': frag.appendChild(screenMenu()); break;
+    case 'report': frag.appendChild(screenReport()); break;
+    case 'ending': frag.appendChild(screenEnding()); break;
+  }
+  return frag;
+}
+
+function screenTitle(){
+  const d=document.createElement('div');
+  d.appendChild(eyebrow('CASE FILE No.1884','TOKYO, IMPERIAL JAPANESE NAVY'));
+  const h=document.createElement('h1'); h.textContent='兵食の謎';
+  const s=document.createElement('p'); s.style.fontSize='14px'; s.style.color='var(--ink-soft)';
+  s.innerHTML='― 高木兼寛と脚気、1884年 ―';
+  d.appendChild(h); d.appendChild(s);
+  const p=document.createElement('p');
+  p.innerHTML = `明治期の日本。原因不明の病「脚気」が、海軍の水兵たちを次々と倒していく。浮腫（むくみ）、運動麻痺・感覚麻痺、そして脚気衝心（ショック状態）による急死――。海軍病院の兵員の<b>3割以上</b>が常にこの病に罹っている状態だった。<br><br>
+  あなたは海軍軍医<b>高木兼寛（たかき かねひろ）1849〜1920年</b>。イギリスのセント・トーマス病院医学校に留学し、疫学・衛生学を学んで帰国した。当時の医学主流はドイツ式細菌学だが、あなたは臨床の目で現場から積み上げていく。<br><br>
+  統計と比較、そして一つの航海実験によって、この国民病の正体に迫れ。`;
+  d.appendChild(p);
+  const span = document.createElement('div'); span.className='stamp'; span.textContent='海軍医務局';
+  d.appendChild(span);
+  const btn=document.createElement('button'); btn.className='btn red'; btn.textContent='捜査を開始する';
+  btn.onclick=()=>go('brief');
+  d.appendChild(btn);
+  const credit=document.createElement('div'); credit.className='credit';
+  credit.textContent='所要時間 約10分 ・ 史実に基づくフィクション';
+  d.appendChild(credit);
+  return d;
+}
+
+function screenBrief(){
+  const d=document.createElement('div');
+  d.appendChild(eyebrow('BRIEFING','明治17年'));
+  const h=document.createElement('h2'); h.textContent='捜査方針';
+  d.appendChild(h);
+  const p=document.createElement('p');
+  p.innerHTML = `現場で5つの手がかりを集める。<br>
+  すべて集めたら、<b>脚気の原因についての仮説</b>を一つ選び、次に<b>練習艦の食事計画</b>を決め、最後に海軍医務局へ提出する<b>報告書</b>をまとめる。<br><br>
+  推理の鍵はひとつ――<br>
+  <span class="stamp" style="transform:rotate(0deg);">同じ艦でも、食べたものが違う者だけが倒れる</span>`;
+  d.appendChild(p);
+  const btn=document.createElement('button'); btn.className='btn'; btn.textContent='聞き込みに向かう';
+  btn.onclick=()=>go('hub');
+  d.appendChild(btn);
+  return d;
+}
+
+function screenHub(){
+  const d=document.createElement('div');
+  d.appendChild(eyebrow('INVESTIGATION','海軍医務局'));
+  const h=document.createElement('h2'); h.textContent='聞き込み先を選ぶ';
+  d.appendChild(h);
+
+  const pwrap=document.createElement('div'); pwrap.className='progress-wrap';
+  const track=document.createElement('div'); track.className='progress-track';
+  const fill=document.createElement('div'); fill.className='progress-fill';
+  fill.style.width = `${(state.collected.size/LOCATIONS.length)*100}%`;
+  track.appendChild(fill);
+  const label=document.createElement('div'); label.className='progress-label';
+  label.textContent=`証拠 ${state.collected.size} / ${LOCATIONS.length}`;
+  pwrap.appendChild(track); pwrap.appendChild(label);
+  d.appendChild(pwrap);
+
+  const list=document.createElement('div'); list.className='loc-list';
+  LOCATIONS.forEach(loc=>{
+    const done = state.collected.has(loc.id);
+    const card=document.createElement('button');
+    card.className='loc-card'+(done?' done':'');
+    card.innerHTML = `
+      <div class="loc-icon">${loc.icon}</div>
+      <div>
+        <div class="loc-name">${loc.name}</div>
+        <div class="loc-status">${done? '聞き込み済み':loc.short}</div>
+      </div>
+      ${done? '<div class="check">✔︎</div>':''}
+    `;
+    card.onclick=()=>{ state.modalLoc=loc.id; render(); };
+    list.appendChild(card);
+  });
+  d.appendChild(list);
+
+  const btn=document.createElement('button');
+  btn.className='btn red';
+  btn.textContent= state.collected.size===LOCATIONS.length ? '統計表を広げ、原因を見極める' : `あと${LOCATIONS.length-state.collected.size}件の聞き込みが必要`;
+  btn.disabled = state.collected.size!==LOCATIONS.length;
+  btn.onclick=()=>go('cause');
+  d.appendChild(btn);
+  return d;
+}
+
+function renderModal(locId){
+  const loc = LOCATIONS.find(l=>l.id===locId);
+  const bg=document.createElement('div'); bg.className='modal-bg';
+  bg.onclick=(e)=>{ if(e.target===bg){ state.modalLoc=null; render(); } };
+  const modal=document.createElement('div'); modal.className='modal';
+  modal.innerHTML = `
+    <span class="clue-tag">${loc.tag}</span>
+    <h2 style="font-size:17px;">${loc.title}</h2>
+    <p style="font-size:14px;">${loc.body}</p>
+  `;
+  const btn=document.createElement('button');
+  btn.className='btn';
+  btn.textContent='証拠ノートに記録する';
+  btn.onclick=()=>{ state.collected.add(loc.id); state.modalLoc=null; render(); };
+  modal.appendChild(btn);
+  bg.appendChild(modal);
+  return bg;
+}
+
+function screenCause(){
+  const d=document.createElement('div');
+  d.appendChild(eyebrow('COMPARATIVE CHART','脚気発症率の比較'));
+  const h=document.createElement('h2'); h.textContent='何が原因だと考えるか';
+  d.appendChild(h);
+  const p=document.createElement('p'); p.style.fontSize='13.5px';
+  p.innerHTML='集めた証言・記録をもとに、集団ごとの脚気発症率を並べた。この差を最もよく説明する仮説を一つ選べ。';
+  d.appendChild(p);
+
+  const chart=document.createElement('div'); chart.className='chart-box';
+  CHART_GROUPS.forEach(g=>{
+    const row=document.createElement('div'); row.className='bar-row';
+    row.innerHTML = `
+      <div class="bar-label"><span>${g.label}</span><span>${g.value}%</span></div>
+      <div class="bar-track"><div class="bar-fill ${g.low?'low':''}" style="width:${g.value}%;"></div></div>
+    `;
+    chart.appendChild(row);
+  });
+  d.appendChild(chart);
+  const note=document.createElement('p'); note.style.fontSize='11.5px'; note.style.color='var(--ink-soft)';
+  note.textContent='※ 記録・証言に基づく推定値。集団内の食事内容の違いに注目せよ。';
+  d.appendChild(note);
+
+  CAUSE_OPTIONS.forEach(opt=>{
+    const picked = state.causeSelected===opt.id;
+    const row=document.createElement('button');
+    row.className='option radio'+(picked?' checked':'');
+    row.innerHTML = `<div class="checkbox round">${picked?'●':''}</div><div>${opt.text}</div>`;
+    row.onclick=()=>{ state.causeSelected=opt.id; render(); };
+    d.appendChild(row);
+  });
+
+  if(state.causeSelected){
+    const opt = CAUSE_OPTIONS.find(o=>o.id===state.causeSelected);
+    if(opt.correct){
+      const fb=document.createElement('div'); fb.className='feedback good';
+      fb.innerHTML='✔ 士官と兵卒、龍驤のハワイでの変化――すべてが食事の違いを指している。これを実証するには、もう一段の検証が必要だ。';
+      d.appendChild(fb);
+      const btn=document.createElement('button'); btn.className='btn red'; btn.textContent='練習艦「筑波」の食事計画を立てる';
+      btn.onclick=()=>go('menu');
+      d.appendChild(btn);
+    } else {
+      const fb=document.createElement('div'); fb.className='feedback bad';
+      fb.innerHTML='✘ それでは、なぜ同じ艦・同じ気候・同じ身分制度の中で、士官だけ発症しにくいのかが説明できない。証拠ノートを見直してみよう。';
+      d.appendChild(fb);
+    }
+  }
+  return d;
+}
+
+function screenMenu(){
+  const d=document.createElement('div');
+  d.appendChild(eyebrow('THE GREAT EXPERIMENT','練習艦「筑波」遠洋航海計画'));
+  const h=document.createElement('h2'); h.textContent='どの食事計画を採用するか';
+  d.appendChild(h);
+  const p=document.createElement('p'); p.style.fontSize='13.5px';
+  p.innerHTML='「筑波」に、脚気で悲劇を起こした「龍驤」と<b>同じ航路</b>をたどらせる。これは仮説を実際に試す、唯一の機会だ。';
+  d.appendChild(p);
+
+  MENU_OPTIONS.forEach(opt=>{
+    const picked = state.menuSelected===opt.id;
+    const row=document.createElement('button');
+    row.className='option radio'+(picked?' checked':'');
+    row.innerHTML = `<div class="checkbox round">${picked?'●':''}</div><div>${opt.text}</div>`;
+    row.onclick=()=>{ state.menuSelected=opt.id; render(); };
+    d.appendChild(row);
+  });
+
+  if(state.menuSelected){
+    const opt = MENU_OPTIONS.find(o=>o.id===state.menuSelected);
+    if(opt.correct){
+      const fb=document.createElement('div'); fb.className='feedback good';
+      fb.innerHTML='✔ 「筑波」は明治17年（1884年）2月、龍驤と同じ航路へ向け出航した。同じ航路、同じ過酷な条件――違うのは食事だけだ。<br><br>帰還した「筑波」の記録が届く。<b>改善食を摂らなかった14名を除く乗員333名中、脚気患者はゼロ、死者もゼロ。</b>龍驤の169名発症・25名死亡とは、まったく対照的な結果だった。';
+      d.appendChild(fb);
+      const btn=document.createElement('button'); btn.className='btn red'; btn.textContent='医務局への報告書を書く';
+      btn.onclick=()=>go('report');
+      d.appendChild(btn);
+    } else {
+      const fb=document.createElement('div'); fb.className='feedback bad';
+      fb.innerHTML='✘ これでは「龍驤」の悲劇を繰り返すだけか、何も検証できない。比較実験にするには、食事という条件そのものを変える必要がある。';
+      d.appendChild(fb);
+    }
+  }
+  return d;
+}
+
+function screenReport(){
+  const d=document.createElement('div');
+  d.appendChild(eyebrow('FINAL REPORT','海軍医務局 宛'));
+  const h=document.createElement('h2'); h.textContent='報告書に載せる根拠を選べ';
+  d.appendChild(h);
+  const p=document.createElement('p'); p.style.fontSize='13.5px';
+  p.innerHTML='医務局の一部は今も「脚気菌」説を支持している。<b>食事改善が有効だと示す事実だけ</b>を選んで提出せよ。誤った根拠を混ぜると説得力を失う。';
+  d.appendChild(p);
+
+  FINAL_OPTIONS.forEach(opt=>{
+    const checked = state.finalChecked.has(opt.id);
+    const row=document.createElement('button');
+    row.className='option'+(checked?' checked':'');
+    row.innerHTML = `<div class="checkbox">${checked?'✔':''}</div><div>${opt.text}</div>`;
+    row.onclick=()=>{ if(state.finalSubmitted) return; toggleSet(state.finalChecked, opt.id); render(); };
+    d.appendChild(row);
+  });
+
+  if(!state.finalSubmitted){
+    const btn=document.createElement('button'); btn.className='btn red';
+    btn.textContent='医務局に提出する';
+    btn.disabled = state.finalChecked.size===0;
+    btn.onclick=()=>{ state.finalSubmitted=true; render(); };
+    d.appendChild(btn);
+  } else {
+    const correctIds = new Set(FINAL_OPTIONS.filter(o=>o.correct).map(o=>o.id));
+    const pickedWrong = [...state.finalChecked].some(id=>!correctIds.has(id));
+    const gotAllCorrect = [...correctIds].every(id=>state.finalChecked.has(id));
+    const perfect = gotAllCorrect && !pickedWrong;
+
+    const fb=document.createElement('div');
+    fb.className='feedback '+(perfect?'good':'bad');
+    if(perfect){
+      fb.innerHTML='✔ 医務局はあなたの報告を受け入れた。海軍の兵食は、白米偏重から<b>米麦混食と副食の充実</b>へと改められていく。';
+    } else if(pickedWrong){
+      fb.innerHTML='✘ 「脚気菌」説や「気力不足」説を混ぜては、観察事実そのものの説得力が薄れる。比較に基づく4つの事実だけを選び直そう。';
+    } else {
+      fb.innerHTML='△ 正しい根拠は選べているが、まだ足りない。士官と兵卒の差、「龍驤」の悲劇、ハワイでの好転、そして「筑波」での比較計画――この4点が揃って初めて報告書になる。';
+    }
+    d.appendChild(fb);
+
+    const btn=document.createElement('button'); btn.className='btn';
+    btn.textContent = perfect? '結末を見る' : '選び直す';
+    btn.onclick=()=>{ if(perfect){ go('ending'); } else { state.finalSubmitted=false; render(); } };
+    d.appendChild(btn);
+  }
+  return d;
+}
+
+function screenEnding(){
+  const d=document.createElement('div');
+  d.appendChild(eyebrow('EPILOGUE','明治17年 〜 日露戦争へ'));
+  const h=document.createElement('h2'); h.textContent='麦飯がもたらしたもの';
+  d.appendChild(h);
+
+  const p1=document.createElement('p');
+  p1.innerHTML = `「筑波」の結果を受け、海軍は兵食を<b>米麦混食・副食の充実</b>へと改めた。以後、海軍の脚気患者と死者は急激に減っていく。日清戦争で海軍の脚気死者はほぼゼロ、日露戦争でもわずか数名にとどまった。`;
+  d.appendChild(p1);
+
+  const p2=document.createElement('p');
+  p2.innerHTML = `一方、ドイツ医学の影響が強かった陸軍は、脚気を伝染病とみなす立場を取り続け、白米中心の兵食を変えなかった。その結果、日清戦争で4,000人以上、<b>日露戦争では約25万人が脚気を発症し、2万7千人以上が脚気で死亡した</b>と記録されている。`;
+  d.appendChild(p2);
+
+  const p3=document.createElement('p');
+  p3.innerHTML = `ただし、これを「一人の頑固な軍医が招いた悲劇」と単純化するのは正確ではない。当時はまだビタミンという概念自体が存在せず、<b>細菌学こそが世界最先端の医学</b>だった時代だ。陸軍の組織判断や、戦場での副食調達の難しさなど、複数の要因が重なった結果でもある。高木の側にも実は誤りがあった――次の通りだ。`;
+  d.appendChild(p3);
+
+  const legend=document.createElement('div'); legend.className='tl-legend';
+  legend.innerHTML = `<span><i class="dot red"></i>これまでの疫学（ジョン・スノウ）</span><span><i class="dot gold"></i>高木が実際に行ったこと</span><span><i class="dot navy"></i>この先、確立されていく手法</span>`;
+  d.appendChild(legend);
+
+  const tl=document.createElement('div'); tl.className='timeline';
+  const items=[
+    {y:'1854年', t:'記述研究・比較（ジョン・スノウ）', desc:'死者の住所を地図に記し（記述①）、醸造所・救貧院・水道会社ごとに「かかった人・かからなかった人の違い」を比べた（比較②）。南ロンドン全体の水道会社比較データも収集（大規模データ③）。条件の操作はしていない。', cls:''},
+    {y:'1884年 ①', t:'比較統計（高木）', desc:'士官と兵卒、艦ごとの脚気発症率を比較し、食事という要因に着目した。これもまだ観察・比較にとどまる（スノウと同じ段階）。', cls:'this'},
+    {y:'1884年 ②', t:'疫学介入試験（高木）＝世界初', desc:'「龍驤」と同じ航路を「筑波」にたどらせ、食事という条件だけを変えて結果を比べた。333名中脚気ゼロ・死者ゼロ。条件を実際に操作・介入した点で、スノウより一段先に進んでいる。「世界初の疫学介入試験」と評価される。', cls:'this'},
+    {y:'20世紀前半', t:'症例対照研究・コホート研究の確立', desc:'発症者と非発症者を体系的に比較する手法が、正式な研究デザインとして整理されていく。', cls:'future'},
+    {y:'1948年', t:'ランダム化比較試験(RCT)', desc:'対象者を無作為に振り分け、同時に比較する近代的な介入研究が確立される。高木の航海実験は前後比較であり、同時に無作為割付された対照群は持っていなかった――その一歩先にある手法だ。', cls:'future'},
+  ];
+  items.forEach(it=>{
+    const el=document.createElement('div'); el.className='tl-item'+(it.cls? ' '+it.cls:'');
+    el.innerHTML = `<span class="tl-year">${it.y}</span><div class="tl-title">${it.t}</div><div class="tl-desc">${it.desc}</div>`;
+    tl.appendChild(el);
+  });
+  d.appendChild(tl);
+
+  const p4=document.createElement('p');
+  p4.innerHTML = `高木自身がたどり着いた答えは「白米偏重でタンパク質（窒素）が不足するから」というものだった。だが本当の原因は、白米に精製する際に失われる<b>ビタミンB1（チアミン）の欠乏</b>だ。この物質を米ぬかから抽出したのは<b>鈴木梅太郎（1874〜1943年）</b>で、1910年にアベリ酸と命名して報告。翌年ポーランドのフンクが同物質をビタミン（vitamine）と命名し、世界に広まった。<br><br>
+  高木の介入実験から<b>約25年後</b>に、脚気の原因物質がようやく判明したことになる。<br><br>
+  高木は<b>正しい仕組みを知らないまま、正しい対策（麦飯）に行き着いた</b>。麦に多く含まれていたのは彼が考えた「タンパク質」だけでなく、不足していたビタミンB1でもあった。原因の理論は誤っていても、比較と実験によって有効な手立てを見抜いた――この「筑波」の航海実験は<b>「世界初の疫学介入試験」</b>と評価され、高木兼寛は<b>「日本の疫学の先駆者」</b>と呼ばれている。`;
+  d.appendChild(p4);
+
+  const badges=document.createElement('div'); badges.className='badge-row';
+  ['日本の疫学の先駆者','世界初の疫学介入試験','麦飯・米麦混食','ビタミンB1（鈴木梅太郎・1910年）'].forEach(t=>{
+    const b=document.createElement('span'); b.className='badge'; b.textContent=t; badges.appendChild(b);
+  });
+  d.appendChild(badges);
+
+  const div=document.createElement('div'); div.className='divider'; d.appendChild(div);
+  const span = document.createElement('div'); span.className='stamp'; span.textContent='CASE CLOSED';
+  d.appendChild(span);
+
+  const btn=document.createElement('button'); btn.className='btn secondary'; btn.textContent='もう一度、最初から捜査する';
+  btn.onclick=()=>{
+    state = {screen:'title', collected:new Set(), causeSelected:null, finalChecked:new Set(), finalSubmitted:false, menuSelected:null, modalLoc:null};
+    render();
+  };
+  d.appendChild(btn);
+  return d;
+}
+
+render();
+</script>
+</body>
+</html>
